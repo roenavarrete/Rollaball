@@ -13,7 +13,8 @@ public class PlayerController : MonoBehaviour
     public float speed = 0;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
-    private float pickupCount = 12.0f;
+    private int pickupCount = 13;
+    private bool alreadyWon = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,10 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 movement = new Vector3(movementX, 0.0f, movementY);
         rb.AddForce(movement * speed);
+        if (gameObject.transform.position.y < -5 && !alreadyWon)
+        {
+            LoseScreen();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -54,6 +59,7 @@ public class PlayerController : MonoBehaviour
         {
             winTextObject.SetActive(true);
             Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+            alreadyWon = true;
         }
     }
 
@@ -61,12 +67,17 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            // Destroy the current object
-            Destroy(gameObject);
-            // Update the winText to display "You Lose!"
-            winTextObject.gameObject.SetActive(true);
-            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!";
+            LoseScreen();
         }
+    }
+
+    private void LoseScreen()
+    {
+        // Destroy the current object
+        Destroy(gameObject);
+        // Update the winText to display "You Lose!"
+        winTextObject.gameObject.SetActive(true);
+        winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!";
     }
 
 }
